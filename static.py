@@ -10,6 +10,17 @@ from jenkinsapi import jenkins
 
 JENKINS = "http://river.suse.de"
 
+def build_time(build):
+    """Return the relative time for when the build finished"""
+    time = datetime.strptime(build._data['id'], "%Y-%m-%d_%H-%M-%S" )
+    delta = datetime.now() - time
+    return next("%i %s ago" % (getattr(delta, measure) / div, output)
+                for output, div, measure in (('days', 1, 'days'),
+                                             ('hours', 3600, 'seconds'),
+                                             ('minutes', 60, 'seconds'),
+                                             ('seconds', 1, 'seconds'))
+                if getattr(delta, measure) / div)
+
 def index():
     jserver = jenkins.Jenkins(JENKINS)
     our_job = jserver.get_job('openstack-unittest')
@@ -21,9 +32,9 @@ def index():
         build = latest_builds.next()
         upstream = build.get_actions()['causes'][0]['upstreamProject']
         if upstream in upstreams:
-            build_time = datetime.strptime(build._data['id'],
-                                           "%Y-%m-%d_%H-%M-%S" )
-            statuses[upstream] = (build.get_status(), build.baseurl, build_time)
+            statuses[upstream] = (build.get_status(),
+                                  build.baseurl,
+                                  build_time(build))
             upstreams.remove(upstream)
 
     return Template("""
