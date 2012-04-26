@@ -26,11 +26,36 @@ def index():
             statuses[upstream] = (build.get_status(), build.baseurl, build_time)
             upstreams.remove(upstream)
 
-    with open('template.html') as f:
-        template = Template(f.read())
-    return template.render(statuses=statuses,
-                           time=datetime.now())
+    return Template("""
+    <!doctype html>
+    <head>
+         <title>Albert is watching</title>
+         <style type="text/css">
+             body { width: auto; margin: 5% 25%; }
+             table { font-size: 1.3em; }
+             tr.failed { background: #F7DAE6; }
+             tr.ok { background: #CAE8CC; }
+             td { padding: .7em; }</style>
+    </head>
+    <body>
+        <table>
+          <tr><th>Job</th><th>Status</th><th>Time</th></tr>
+          {% for job_name, (status, url, build_time) in statuses.items() %}
+          {% if status == "FAILURE" %}
+          <tr class="failed">
+          {% else %}
+          <tr class="ok">
+          {% endif %}
+            <td><a href="{{ url }}">{{ job_name }}</a></td>
+            <td>{{ status }}</td>
+            <td>{{ build_time }}</td>
+          </tr>
+          {% endfor %}
+        </table>
 
+        <p>Last generated: {{ time }}</p>
+    </body>
+    """).render(statuses=statuses, time=datetime.now())
 
 if __name__ == "__main__":
     ofile = sys.argv[1]
