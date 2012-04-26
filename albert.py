@@ -3,12 +3,14 @@
 from __future__ import with_statement
 
 import sys
+from time import sleep
 from datetime import datetime
 
 from jinja2 import Template
 from jenkinsapi import jenkins
 
 JENKINS = "http://river.suse.de"
+SECONDS = 3 # how often will the page be refreshed
 
 def build_time(build):
     """Return the relative time for when the build finished"""
@@ -71,9 +73,8 @@ def index():
 if __name__ == "__main__":
     ofile = sys.argv[1]
 
-    # run it continously - or how to flood jenkins
-    # while True:
-    output = index()
-
-    with open(ofile, 'w') as f:
-        f.write(output)
+    while True:
+        output = index()
+        with open(ofile, 'w') as f:
+            f.write(output)
+        sleep(SECONDS)
