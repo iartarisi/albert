@@ -19,7 +19,7 @@ def index():
     latest_builds = (our_job.get_build(b) for b in our_job.get_build_ids())
     while upstreams:
         build = latest_builds.next()
-        upstream = _get_build_upstream(build)
+        upstream = build.get_actions()['causes'][0]['upstreamProject']
         if upstream in upstreams:
             build_time = datetime.strptime(build._data['id'],
                                            "%Y-%m-%d_%H-%M-%S" )
@@ -31,8 +31,6 @@ def index():
     return template.render(statuses=statuses,
                            time=datetime.now())
 
-def _get_build_upstream(build):
-    return build.get_actions()['causes'][0]['upstreamProject']
 
 if __name__ == "__main__":
     ofile = sys.argv[1]
