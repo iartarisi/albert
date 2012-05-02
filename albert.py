@@ -10,6 +10,7 @@ from jinja2 import Template
 from jenkinsapi import jenkins
 
 JENKINS = "http://river.suse.de"
+JOB = 'openstack-unittest'
 SECONDS = 3 # how often will the page be refreshed
 
 def build_time(build):
@@ -25,7 +26,7 @@ def build_time(build):
 
 def index():
     jserver = jenkins.Jenkins(JENKINS)
-    our_job = jserver.get_job('openstack-unittest')
+    our_job = jserver.get_job(JOB)
 
     upstreams = [u['name'] for u in our_job._data['upstreamProjects']]
     statuses = {}
