@@ -86,6 +86,7 @@ def index():
         </table>
 
         <p>Last generated: {{ time }}</p>
+        <p>Fork me on <a href="https://github.com/mapleoin/albert">github</a></p>
     </body>
     """).render(statuses=statuses, time=datetime.now())
 
