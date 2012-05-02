@@ -47,7 +47,8 @@ def index():
              body { width: auto; margin: 5% 25%; }
              table { font-size: 1.3em; }
              tr.failed { background: #F7DAE6; }
-             tr.ok { background: #CAE8CC; }
+             tr.success { background: #CAE8CC; }
+             tr.unknown { background: white; }
              td { padding: .7em; }</style>
     </head>
     <body>
@@ -56,8 +57,10 @@ def index():
           {% for job_name, (status, url, build_time) in statuses.items() %}
           {% if status == "FAILURE" %}
           <tr class="failed">
+          {% elif status == "SUCCESS" %}
+          <tr class="success">
           {% else %}
-          <tr class="ok">
+          <tr class="unknown">
           {% endif %}
             <td><a href="{{ url }}">{{ job_name }}</a></td>
             <td>{{ status }}</td>
